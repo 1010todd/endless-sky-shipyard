@@ -21,6 +21,8 @@ Or you could probably open it in your favorite Java IDE and click on whatever bu
 
 ## Running
 
+Double click es_shipyard.jar
+
 ```bash
 java -jar es_shipyard.jar
 ```
