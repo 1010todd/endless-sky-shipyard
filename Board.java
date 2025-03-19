@@ -292,13 +292,13 @@ public class Board extends JPanel implements ActionListener {
 				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getTurretData().angle, mirror));
 				break;
 			case "engine":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle, mirror));
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle - 180, mirror));
 				break;
 			case "reverse engine":
 				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.rev_engine_data.angle, mirror));
 				break;
 			case "steering engine":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.ste_engine_data.angle, mirror));
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.ste_engine_data.angle - 180, mirror));
 				break;
 			case "bay":
 				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.bay_data.angle, mirror));
