@@ -290,6 +290,16 @@ public class Board extends JPanel implements ActionListener {
 				break;
 			case "turret":
 				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getTurretData().angle, mirror));
+				double t_a = control_panel.getTurretData().angle;
+				Point src = new Point((int)x, (int)y);
+				Point arcmin = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE * .75, toGameAngle(t_a + control_panel.getTurretData().arc_min, mirror));
+				Point arcmax = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE * .75, toGameAngle(t_a + control_panel.getTurretData().arc_max, mirror));
+				arcmin.x += src.x;
+				arcmin.y += src.y;
+				arcmax.x += src.x;
+				arcmax.y += src.y;
+				drawLine(g, src, arcmin, Color.GREEN,1f );
+				drawLine(g, src, arcmax, Color.RED,1f );
 				break;
 			case "engine":
 				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle - 180, mirror));
