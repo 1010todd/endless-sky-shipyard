@@ -437,7 +437,32 @@ public class Board extends JPanel implements ActionListener {
 			// System.out.println("Press:" + event.getButton() + " : " + event.getPoint());
 			requestFocusInWindow();
 			recent_button = event.getButton();
-			if (event.getButton() == MouseEvent.BUTTON1 && img_bound.contains(event.getPoint())) {
+			if (event.getButton() == MouseEvent.BUTTON1 && altPressed) {
+				int selectedHardpoint = control_panel.getHardpointPanel().getSelectedIndex();
+				// Point angle_targ = null;
+				
+				switch(Hardpoint.hp_types.get(selectedHardpoint)) {
+					case "gun":
+						control_panel.setHardpointAngle("gun", draw_angle);
+						break;
+					case "turret":
+						control_panel.setHardpointAngle("turret", draw_angle);
+						break;
+					case "engine":
+						control_panel.setHardpointAngle("engine", draw_angle);
+						break;
+					case "reverse engine":
+						control_panel.setHardpointAngle("reverse engine", draw_angle);
+						break;
+					case "steering engine":
+						control_panel.setHardpointAngle("steering engine", draw_angle);
+						break;
+					case "bay":
+						control_panel.setHardpointAngle("bay", draw_angle);
+						break;
+				}
+			}
+			else if (event.getButton() == MouseEvent.BUTTON1 && img_bound.contains(event.getPoint())) {
 				if (control_panel.isSnapCenter() && shouldSnapCenter(event.getPoint().getX())) {
 					setDrawX(0);
 					setDrawY(event.getPoint().getY());
@@ -474,7 +499,7 @@ public class Board extends JPanel implements ActionListener {
 		@Override
 		public void mouseDragged(MouseEvent event) {
 			// System.out.println("Drag:" + event.getButton() + " : " + event.getPoint());
-			if (recent_button == MouseEvent.BUTTON1 && img_bound.contains(event.getPoint())) {
+			if (recent_button == MouseEvent.BUTTON1 && img_bound.contains(event.getPoint()) && !altPressed) {
 				setDrawX(event.getPoint().getX());
 				setDrawY(event.getPoint().getY());
 				update_info = true;

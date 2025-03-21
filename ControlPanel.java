@@ -391,6 +391,36 @@ public class ControlPanel extends JPanel implements ItemListener{
 		return panel;
 	}
 
+	JFormattedTextField gunAngleField;
+	JFormattedTextField turretAngleField;
+	JFormattedTextField engineAngleField;
+	JFormattedTextField revengineAngleField;
+	JFormattedTextField steeringengineAngleField;
+	JFormattedTextField bayAngleField;
+
+	public void setHardpointAngle(String hp_str, double angle) {
+		switch (hp_str) {
+			case "gun":
+				gunAngleField.setValue(angle);
+				break ;
+			case "turret":
+				turretAngleField.setValue(angle);
+				break ;
+			case "engine":
+				engineAngleField.setValue(angle);
+				break ;
+			case "reverse engine":
+				revengineAngleField.setValue(angle);
+				break ;
+			case "steering engine":
+				steeringengineAngleField.setValue(angle);
+				break ;
+			case "bay":
+				bayAngleField.setValue(angle);
+				break ;
+		}
+	}
+
 	protected JPanel makeHardpointPanel(String type) {
 		JPanel panel = new JPanel(false);
 		Hardpoint.HardpointType hp_type;
@@ -432,6 +462,7 @@ public class ControlPanel extends JPanel implements ItemListener{
 			overCheck.setToolTipText("Draw the hardpoint sprite over the ship instead of under.");
 
 			JTextField angleField = (JTextField)anglePanel.getComponent(input_field_index);
+			gunAngleField = (JFormattedTextField)angleField;
 			angleSlider.addChangeListener(new AngleSliderListener(angleField, hp_type));
 			angleField.addPropertyChangeListener(new NumFieldListener(angleSlider, hp_type));
 			parallelCheck.addItemListener(new HardpointCheckBoxListener(hp_type));
@@ -502,6 +533,7 @@ public class ControlPanel extends JPanel implements ItemListener{
 			underCheck.setToolTipText("Draw the hardpoint sprite under the ship instead of over.");
 
 			JTextField angleField = (JTextField)anglePanel.getComponent(input_field_index);
+			turretAngleField = (JFormattedTextField)angleField;
 			angleSlider.addChangeListener(new AngleSliderListener(angleField, hp_type));
 			angleField.addPropertyChangeListener(new NumFieldListener(angleSlider, hp_type));
 			
@@ -623,6 +655,15 @@ public class ControlPanel extends JPanel implements ItemListener{
 			}
 
 			JTextField angleField = (JTextField)anglePanel.getComponent(input_field_index);
+			if (type.equals("engine")) {
+				engineAngleField = (JFormattedTextField)angleField;
+			}
+			else if (type.equals("reverse engine")) {
+				revengineAngleField = (JFormattedTextField)angleField;
+			}
+			else if (type.equals("steering engine")) {
+				steeringengineAngleField = (JFormattedTextField)angleField;
+			}
 			angleSlider.addChangeListener(new AngleSliderListener(angleField, hp_type));
 			angleField.addPropertyChangeListener(new NumFieldListener(angleSlider, hp_type));
 			
@@ -703,6 +744,7 @@ public class ControlPanel extends JPanel implements ItemListener{
 			JPanel anglePanel = makeLabeledField("angle", "Facing for the carried ship.");
 
 			JTextField angleField = (JTextField)anglePanel.getComponent(input_field_index);
+			bayAngleField = (JFormattedTextField)angleField;
 			angleSlider.addChangeListener(new AngleSliderListener(angleField, hp_type));
 			angleField.addPropertyChangeListener(new NumFieldListener(angleSlider, hp_type));
 

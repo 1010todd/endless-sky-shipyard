@@ -39,6 +39,7 @@ java -jar es_shipyard.jar
 * Alt-C select "Snap to center" to snap X 0.5 to 0 or X within +-0.005x of the image width.
 * Alt-X or Alt-Y or select Lock X or Y axis when moving the pointer.
 * Hold A to draw a angle guide and display the current angle relative to the front.
+* Hold A and click to set angle for the selected hardpoint type.
 * Scroll wheel to zoom in and out.
 * Middle mouse button to drag
 * Home key to reset zoom and drag.
