@@ -205,7 +205,7 @@ public class InfoDisplay extends JPanel{
 		private Vector<JMenuItem> items = new Vector<JMenuItem>();
 		private Clipboard clipboard;
 
-		static public final List<String> datamenu_items = Arrays.asList(
+		public final List<String> datamenu_items = Arrays.asList(
 			"copy"
 		);
 		public DataMenu() {
