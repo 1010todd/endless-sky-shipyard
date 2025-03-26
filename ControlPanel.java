@@ -278,21 +278,13 @@ public class ControlPanel extends JPanel implements ItemListener{
 		public ArcVisualizationCanvas() {
 		}
 
-		public Point polarToCartesian(double len, double angle_deg) {
-			Point ret = new Point();
-
-			ret.x = (int)Math.round(len * Math.cos(Math.toRadians(angle_deg)));
-			ret.y = (int)Math.round(len * Math.sin(Math.toRadians(angle_deg)));
-			return ret;
-		}
-
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Point center = new Point((int)(getWidth() * .5), (int)(getHeight() * .5));
-			Point idle_at = polarToCartesian(IDL_LEN, turret_data.angle - 90);
-			Point min = polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_min - 90);
-			Point max = polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_max - 90);
+			Point idle_at = MathUtils.polarToCartesian(IDL_LEN, turret_data.angle - 90);
+			Point min = MathUtils.polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_min - 90);
+			Point max = MathUtils.polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_max - 90);
 
 			// System.out.println("len:"+IDL_LEN+" angle:"+turret_data.angle+"P="+idle_at+"Orign:"+center);
 			idle_at.x += center.x;
@@ -1026,20 +1018,12 @@ public class ControlPanel extends JPanel implements ItemListener{
 				}
 				else if (type == Hardpoint.HardpointType.TURRET && prop == "min arc") {
 					turret_data.arc_min = dval;
-					if (turret_data.arc_min != -180. && turret_data.arc_max != 180.) {
-						setTurretHaveArc(true);
-					}
-					else 
-						setTurretHaveArc(false);
+					checkSetArc();
 					arcVisCanvas.doRedraw();
 				}
 				else if (type == Hardpoint.HardpointType.TURRET && prop == "max arc") {
 					turret_data.arc_max = dval;
-					if (turret_data.arc_min != -180. && turret_data.arc_max != 180.) {
-						setTurretHaveArc(true);
-					}
-					else 
-						setTurretHaveArc(false);
+					checkSetArc();
 					arcVisCanvas.doRedraw();
 				}
 				else if (type == Hardpoint.HardpointType.ENGINE) {
@@ -1056,6 +1040,14 @@ public class ControlPanel extends JPanel implements ItemListener{
 				}
 			}
 		}
+	}
+
+	protected void checkSetArc() {
+		if (turret_data.arc_min == -180. && turret_data.arc_max == 180.) {
+			setTurretHaveArc(false);
+		}
+		else
+			setTurretHaveArc(true);
 	}
 	class NumFieldListener implements PropertyChangeListener {
 		JSlider paired_slider = null;
@@ -1147,20 +1139,12 @@ public class ControlPanel extends JPanel implements ItemListener{
 				}
 				else if (type == Hardpoint.HardpointType.TURRET && property_str == "min arc") {
 					turret_data.arc_min = dval;
-					if (turret_data.arc_min != -180. && turret_data.arc_max != 180.) {
-						setTurretHaveArc(true);
-					}
-					else
-						setTurretHaveArc(false);
+					checkSetArc();
 					arcVisCanvas.doRedraw();
 				}
 				else if (type == Hardpoint.HardpointType.TURRET && property_str == "max arc") {
 					turret_data.arc_max = dval;
-					if (turret_data.arc_min != -180. && turret_data.arc_max != 180.) {
-						setTurretHaveArc(true);
-					}
-					else
-						setTurretHaveArc(false);
+					checkSetArc();
 					arcVisCanvas.doRedraw();
 				}
 				else if (type == Hardpoint.HardpointType.ENGINE && property_str == "angle") {

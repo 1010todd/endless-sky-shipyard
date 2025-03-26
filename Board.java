@@ -183,9 +183,9 @@ public class Board extends JPanel implements ActionListener {
 	// 	public void paintComponent(Graphics g) {
 	// 		super.paintComponent(g);
 	// 		Point center = new Point((int)(getWidth() * .5), (int)(getHeight() * .5));
-	// 		Point idle_at = polarToCartesian(IDL_LEN, turret_data.angle - 90);
-	// 		Point min = polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_min - 90);
-	// 		Point max = polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_max - 90);
+	// 		Point idle_at = MathUtils.polarToCartesian(IDL_LEN, turret_data.angle - 90);
+	// 		Point min = MathUtils.polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_min - 90);
+	// 		Point max = MathUtils.polarToCartesian(LIM_LEN, turret_data.angle + turret_data.arc_max - 90);
 
 	// 		// System.out.println("len:"+IDL_LEN+" angle:"+turret_data.angle+"P="+idle_at+"Orign:"+center);
 	// 		idle_at.x += center.x;
@@ -201,17 +201,6 @@ public class Board extends JPanel implements ActionListener {
 	// 		drawCircle(g, getWidth() * .5, getHeight() * .5, Color.CYAN);
 	// 		Toolkit.getDefaultToolkit().sync();
 	// 	}
-
-	public Point polarToCartesian(double len, double angle_deg) {
-		Point ret = new Point();
-
-		ret.x = (int)Math.round(len * Math.cos(Math.toRadians(angle_deg)));
-		ret.y = (int)Math.round(len * Math.sin(Math.toRadians(angle_deg)));
-		return ret;
-	}
-	public double cartesianToPolarAngle(double x, double y) {
-		return Math.atan2(x, y);
-	}
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -248,7 +237,7 @@ public class Board extends JPanel implements ActionListener {
 			if (getMousePosition() != null) {
 				double tmp_x = getMousePosition().x - draw_x;
 				double tmp_y = getMousePosition().y - draw_y;
-				draw_angle = (180 - Math.toDegrees(cartesianToPolarAngle(tmp_x, tmp_y)));
+				draw_angle = (180 - Math.toDegrees(MathUtils.cartesianToPolarAngle(tmp_x, tmp_y)));
 			}
 		}
 		Toolkit.getDefaultToolkit().sync();
@@ -286,14 +275,14 @@ public class Board extends JPanel implements ActionListener {
 		
 		switch(Hardpoint.hp_types.get(selectedHardpoint)) {
 			case "gun":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getGunData().angle, mirror));
+				angle_targ = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getGunData().angle, mirror));
 				break;
 			case "turret":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getTurretData().angle, mirror));
+				angle_targ = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getTurretData().angle, mirror));
 				double t_a = control_panel.getTurretData().angle;
 				Point src = new Point((int)x, (int)y);
-				Point arcmin = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE * .75, toGameAngle(t_a + control_panel.getTurretData().arc_min, mirror));
-				Point arcmax = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE * .75, toGameAngle(t_a + control_panel.getTurretData().arc_max, mirror));
+				Point arcmin = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE * .75, toGameAngle(t_a + control_panel.getTurretData().arc_min, mirror));
+				Point arcmax = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE * .75, toGameAngle(t_a + control_panel.getTurretData().arc_max, mirror));
 				arcmin.x += src.x;
 				arcmin.y += src.y;
 				arcmax.x += src.x;
@@ -302,16 +291,16 @@ public class Board extends JPanel implements ActionListener {
 				drawLine(g, src, arcmax, Color.RED,1f );
 				break;
 			case "engine":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle - 180, mirror));
+				angle_targ = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle - 180, mirror));
 				break;
 			case "reverse engine":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.rev_engine_data.angle, mirror));
+				angle_targ = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.rev_engine_data.angle, mirror));
 				break;
 			case "steering engine":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.ste_engine_data.angle - 180, mirror));
+				angle_targ = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.ste_engine_data.angle - 180, mirror));
 				break;
 			case "bay":
-				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.bay_data.angle, mirror));
+				angle_targ = MathUtils.polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.bay_data.angle, mirror));
 				break;
 		}
 		if (angle_targ != null) {
@@ -414,10 +403,6 @@ public class Board extends JPanel implements ActionListener {
 	protected double prev_x, prev_y;
 	protected Point menu_beginclick;
 
-	public double lengthPoints(Point a, Point b) {
-		return Math.sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
-	}
-
 	class MouseButtonListener extends MouseAdapter {
 		public static final double max_dist_menu = 30.;
 		/*
@@ -486,7 +471,7 @@ public class Board extends JPanel implements ActionListener {
 		@Override
 		public void mouseReleased(MouseEvent event) {
 			// System.out.println("Released:" + event.getButton() + ":" + event.getPoint());
-			if (event.getButton() == MouseEvent.BUTTON3 && lengthPoints(menu_beginclick, event.getPoint()) < max_dist_menu) {
+			if (event.getButton() == MouseEvent.BUTTON3 && MathUtils.lengthPoints(menu_beginclick, event.getPoint()) < max_dist_menu) {
 				HardpointMenu menu = new HardpointMenu();
 				menu.show(event.getComponent(), event.getX(), event.getY());
 			}
@@ -665,7 +650,6 @@ public class Board extends JPanel implements ActionListener {
 				addHardpoint(Hardpoint.HardpointType.BAY);
 			}
 		}
-
 	}
 
 }
