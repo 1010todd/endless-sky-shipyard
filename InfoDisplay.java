@@ -5,19 +5,31 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultEditorKit;
-import javax.swing.text.DefaultEditorKit.CopyAction;;
+import javax.swing.text.DefaultEditorKit.CopyAction;
 
 // import Hardpoint.HardpointType;
 
@@ -85,10 +97,13 @@ public class InfoDisplay extends JPanel{
 		this.add(scrollPane);
 		// this.add(hardpointArea);
 
-		//Another focus bs
-		// JButton copyButton = new JButton(new CopyAction());
-		// copyButton.setText("Copy");
-		// this.add(copyButton);
+		InfoDisMouseListener mouseListener = new InfoDisMouseListener();
+		this.addMouseListener(mouseListener);
+		this.addMouseMotionListener(mouseListener);
+		this.addMouseWheelListener(mouseListener);
+		hardpointArea.addMouseListener(mouseListener);
+		hardpointArea.addMouseMotionListener(mouseListener);
+		hardpointArea.addMouseWheelListener(mouseListener);
 	}
 
 	public void updateCoordinateField(double x, double y, double angle) {
@@ -153,6 +168,68 @@ public class InfoDisplay extends JPanel{
 			// x_off += tmp.getFont().getSize() + 5;
 			// System.out.println("Check: " + tmp.getText() + " at [" + tmp.getLocation().x + ", " + tmp.getLocation().y + "]");
 			// this.add(tmp);
+		}
+	}
+	class InfoDisMouseListener extends MouseAdapter {
+		public static final double max_dist_menu = 30.;
+		private int recent_button;
+		private Point menu_beginclick;
+		protected DataMenu ifdmenu = new DataMenu();
+
+		@Override
+		public void mouseClicked(MouseEvent event) {
+			System.out.println("IFD_Click:" + event.getButton() + " : " + event.getPoint());
+		}
+
+		@Override
+		public void mousePressed(MouseEvent event) {
+			System.out.println("IFD_Press:" + event.getButton() + " : " + event.getPoint());
+			requestFocusInWindow();
+			recent_button = event.getButton();
+			if (event.getButton() == MouseEvent.BUTTON3) {
+				menu_beginclick = event.getPoint();
+			}
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent event) {
+			System.out.println("IFD_Released:" + event.getButton() + ":" + event.getPoint());
+			if (event.getButton() == MouseEvent.BUTTON3 && MathUtils.lengthPoints(menu_beginclick, event.getPoint()) < max_dist_menu) {
+				ifdmenu.show(event.getComponent(), event.getX(), event.getY());
+			}
+			recent_button = 0;
+		}
+	}
+
+	class DataMenu extends JPopupMenu implements ActionListener {
+		private Vector<JMenuItem> items = new Vector<JMenuItem>();
+		private Clipboard clipboard;
+
+		static public final List<String> datamenu_items = Arrays.asList(
+			"copy"
+		);
+		public DataMenu() {
+			for (String hp : datamenu_items) {
+				JMenuItem tmp = new JMenuItem(hp);
+				tmp.addActionListener(this);
+				items.add(tmp);
+				add(tmp);
+			}
+			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println(this.getClass().getName() + ".actionPerformed: Source=" + e.getSource());
+			requestFocusInWindow();
+			JMenuItem selected_menu = (JMenuItem) e.getSource();
+			switch (selected_menu.getText()) {
+				case "copy":
+					StringSelection select = new StringSelection(hardpointArea.getText());
+					clipboard.setContents(select, null);
+					break ;
+				default:
+			}
 		}
 	}
 }

@@ -44,3 +44,4 @@ java -jar es_shipyard.jar
 * Middle mouse button to drag
 * Home key to reset zoom and drag.
 * Configure hardpoint values on the left panel.
+* Right-Click on the right panel for quick copy-all.
